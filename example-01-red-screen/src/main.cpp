@@ -1,23 +1,24 @@
 #include <Arduino.h>
 
+// Minimal example: print "Hello, world" to Serial every 5 seconds.
+// Notes:
+//  - Uses a short, non-blocking wait for USB CDC so it doesn't hang if no host is attached.
+//  - Baud rate must match your serial monitor (115200 by default).
+
 void setup() {
   Serial.begin(115200);
-  while (!Serial) { delay(10); }
 
-  Serial.println("--- ESP32-S3 Specs ---");
-  Serial.printf("Chip model     : %s\n",   ESP.getChipModel());
-  Serial.printf("Chip revision  : %d\n",   ESP.getChipRevision());
-  Serial.printf("CPU freq (MHz) : %d\n",   ESP.getCpuFreqMHz());
-  Serial.printf("Cores          : %d\n",   ESP.getChipCores());
+  // Wait up to 2 seconds for a host to open the USB CDC port (optional)
+  const uint32_t t0 = millis();
+  while (!Serial && (millis() - t0) < 2000) {
+    delay(10);
+  }
 
-  uint32_t flash_bytes = ESP.getFlashChipSize();
-  Serial.printf("Flash size     : %u MB\n", flash_bytes / (1024 * 1024));
-  Serial.printf("Flash speed    : %u Hz\n", ESP.getFlashChipSpeed());
-
-  bool has_psram = psramFound();
-  Serial.printf("PSRAM present  : %s\n", has_psram ? "YES" : "NO");
-  Serial.printf("PSRAM size     : %u MB\n", ESP.getPsramSize() / (1024 * 1024));
-  Serial.println("-----------------------");
+  Serial.println("Hello, world");
 }
 
-void loop() { delay(1000); }
+void loop() {
+  // Repeat every 5 seconds
+  delay(5000);
+  Serial.println("Hello, world");
+}
