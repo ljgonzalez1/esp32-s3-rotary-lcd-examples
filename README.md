@@ -6,6 +6,7 @@
 * [Examples](#-examples)
 * [Getting Started](#-getting-started)
 * [File Tree](#-file-tree)
+* [Hardware Specs (This Device)](#-hardware-specs-this-device)
 * [Licence](#-licence)
 
 ### 🧭 Overview
@@ -36,6 +37,22 @@ esp32-s3-rotary-lcd-examples/
 │  └─ src/main.cpp
 └─ LICENSE
 ```
+
+---
+
+### 🧩 Hardware Specs (This Device)
+
+* **SoC:** ESP32‑S3 (QFN56), **revision v0.2**
+* **CPU:** Dual‑core + LP core, **up to 240 MHz**
+* **Crystal:** **40 MHz**
+* **Connectivity:** **Wi‑Fi** and **Bluetooth 5 (LE)**
+* **USB:** **USB‑Serial/JTAG (native)** — typical Linux port: `/dev/ttyACM0`
+* **Flash:** **16 MB** SPI flash (JEDEC **0x46:0x4018**), **quad** mode, **3.3 V**
+* **PSRAM:** **8 MB embedded** (vendor: **AP\_3v3**)
+* **Boot/eFuse notes:** `VDD_SPI=3.3V`, USB features enabled, UART boot message output enabled
+* **MAC:** `30:ED:A0:1D:0C:00` (unique identifier)
+
+*(All values measured via `esptool`/`espefuse` on this board.)*
 
 ---
 
