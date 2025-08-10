@@ -119,6 +119,7 @@ static void printData() {
   Serial.println("==== Setup done ====\n");
 }
 
+#ifndef UNIT_TEST
 void setup() {
   delay(250);
   Serial.begin(115200);
@@ -137,3 +138,4 @@ void loop() {
   //Serial.printf("Hello, world! %lu\n", (unsigned long)n++);
   delay(1000);
 }
+#endif
