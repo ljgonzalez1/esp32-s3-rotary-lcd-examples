@@ -1,0 +1,72 @@
+# ESP-IDF Partition Table
+
+# Name: Up to 15 characters long (16 bytes)
+# Types & subtypes:
+# - 0x00: app: Custom sized. For app (firmware.bin)
+#     - 0x00: factory: Runs by default unless sey otherwise by otadata
+#     - 0x01: ota_0: For OTA updates
+#     - ...
+#     - 0x1F: ota_15: For OTA updates
+#     - 0x20: test
+# - 0x01: data
+#     - 0x00: ota: Bootloader OTA app index. Fixed 8kiB size.
+#     - 0x01: phy: Stores PHY initialisation data.
+#                        This allows PHY to be configured per-device instead of in firmware.
+#                        PHY initialisation data is compiled into the app itself.
+#                        This partition can be removed from the partition table to save space.
+#                        To load PHY data from this partition then open the project configuration menu (idf.py menuconfig) and
+#                        enable CONFIG_ESP_PHY_INIT_DATA_IN_PARTITION option.
+#                        You will also need to flash your devices with phy init data as the esp-idf build system does not do this automatically.
+#     - 0x02: nvs: Non-Volatile Storage. Key-Value pairs.
+#                        NVS is used to store per-device PHY calibration data (different to initialisation data).
+#                        NVS is used to store Wi-Fi data if the esp_wifi_set_storage(WIFI_STORAGE_FLASH) initialization function is used.
+#                        It is strongly recommended that you include an NVS partition of at least 0x3000 bytes in your project.
+#                        If using NVS API to store a lot of data increase the NVS partition size from the default 0x6000 bytes.
+#     - 0x03: coredump: For storing core dumps while using a custom partition table CSV file
+#     - 0x04: nvs_keys: It is used to store NVS encryption keys when NVS Encryption feature is enabled.
+#     - 0x05: efuse: Emulates eFuse bits using Virtual eFuses. Fixed 2kiB size
+#                        https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/efuse.html#virtual-efuses
+#     - 0x06: undefined: Implicitly used for data partitions with unspecified (empty) subtype
+#     - 0x81: fat: Suports FAT file systems
+#     - 0x82: spiffs: Support SPIFFS file system
+#     - 0x83: littlefs: Supports LittleFS file System
+# - 0x02: bootloader: bootloader.bin. Fixed 4kiB size.
+#     - 0x00: primary: This is the 2nd stage bootloader. Fixed 4kiB size.
+#     - 0x01; ota: For bootloader OTA updates
+#     - 0x02; recovery: Made for safely update the bootloader. Fixed 4kiB size.
+# - 0x03: partition_table:
+#     - 0x00: primary: Primary partition table. Fixed 4kiB size
+#     - 0x01: ota: For OTA updates. Fixed 4kiB size
+# - 0x40-0xFE: Custom
+#     - 0x00-0xFE: -- : Subtype chosen by application itself via Partition API
+
+# Flags:
+# - ecrypted
+# - readonly
+
+# Name,            Type,            SubType,   Offset,   Size,     Flags
+
+# Bootloader,      bootloader,      primary,   0x000000, 0x001000,        , # 4kiB
+# BootloaderData,  undefined,                , 0x001000, 0x007000,        , # 28kiB ; bootloader data & others.
+# partitionTable,  partition_table, primary,   0x008000, 0x001000,        , # 4kiB
+
+#                                        ------ Fixed offset 36k ------
+
+nvs,               data,             nvs,      0x009000, 0x005000,        , # 20kiB
+otaData,           data,             ota,      0x00E000, 0x002000,        , # 8KiB
+#phy_init,         data,             phy,      N/A,      N/A,             ,
+
+#                                        ------ Fixed offset 64k ------
+
+factory,           app,              factory,  0x010000, 0x060000,         , # 384kiB
+upd1,              app,              ota_0,    0x070000, 0x080000,         , # 512kiB
+upd2,              app,              ota_1,    0x0F0000, 0x080000,         , # 512kiB
+tests,             app,              test,     0x170000, 0x200000,         , # 2MiB
+
+storage,           data,             0x83,     0x370000, 0x400000,         , # 4MiB ; littlefs
+tmp,               data,             0x83,     0x770000, 0x08E000,         , # 568kiB ; littlefs
+
+parTableOta,       0x03,             0x01,     0x7FE000, 0x001000,         , # 4kiB
+recoveryBloader,   0x02,             0x02,     0x7FF000, 0x001000,         , # 4kiB
+
+#                                        ------- Hard cutoff 8M ------
