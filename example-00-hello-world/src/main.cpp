@@ -1,8 +1,3 @@
-// File: src/main.cpp
-// ESP32‑S3 Introspection Hello World (Arduino core 3.x compatible)
-// setup(): imprime la mayor cantidad de info interna posible
-// loop(): imprime "Hello, world!" cada 1 s
-
 #include <Arduino.h>
 #include <WiFi.h>
 
