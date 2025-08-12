@@ -50,7 +50,7 @@ struct SerialPrompt {
     if (cap) buf[len] = '\0';
     return buf;
   }
-};
+}
 
 // Build the response line without printing (useful for tests and formatting)
 inline String make_response(const char* msg) {
