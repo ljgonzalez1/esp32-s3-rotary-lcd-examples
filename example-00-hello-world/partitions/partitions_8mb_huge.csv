@@ -1,0 +1,7 @@
+# Name,  Type, SubType, Offset,   Size,     Flags
+#                  ------ Fixed offset 36k ------
+nvs,     data, nvs,     0x009000, 0x007000,      , # 28kiB
+#                  ------ Fixed offset 64k ------
+app,     app,  factory, 0x010000, 0x3F0000,      , # 3.9375MiB
+storage, data, 0x83,    0x4F0000, 0x400000,      , # 4MiB ; littlefs
+#                  ----------- END 8M -----------
