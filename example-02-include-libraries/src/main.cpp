@@ -11,69 +11,44 @@ static void banner(const char* msg) {
   Serial.println(msg);
   Serial.println(F("=================================================="));
 }
-static void report(const char* name, const char* hdr, bool ok) {
-  if (ok) {
-    Serial.print(F("[OK] ")); Serial.print(name);
-    Serial.print(F("  <")); Serial.print(hdr); Serial.println(F(">"));
-  } else {
-    Serial.print(F("[--] ")); Serial.print(name);
-    Serial.println(F("  (header not found)"));
-  }
-}
 
 void setup() {
+  /* USB CDC */
   Serial.begin(USB_MONITOR_BAUD);
-  unsigned long t0 = millis();
-  while (!Serial && (millis() - t0 < 3000)) { delay(25); }
+  while (!Serial) { delay(10); }
+  banner("ESP32-S3 Knob — Include check");
 
-  banner("VIEWE libs import check");
-
-#ifdef V_HAVE_LVGL
-  report("LVGL", V_LVGL_HDR, true);
+  /* Reporte IO Expander */
+#if V_HAVE_IOEXP
+  Serial.print(F("IO_Expander header: ")); Serial.println(F(V_IOEXP_HDR));
 #else
-  report("LVGL", "", false);
+  Serial.println(F("IO_Expander header: NOT FOUND"));
 #endif
 
-#ifdef V_HAVE_PANEL
-  report("ESP32_Display_Panel", V_PANEL_HDR, true);
+#if V_HAVE_UTILS
+  Serial.print(F("esp-lib-utils header: ")); Serial.println(F(V_UTILS_HDR));
 #else
-  report("ESP32_Display_Panel", "", false);
+  Serial.println(F("esp-lib-utils header: NOT FOUND (ok si no lo usas directo)"));
 #endif
 
-#ifdef V_HAVE_IOX
-  report("ESP32_IO_Expander", V_IOX_HDR, true);
+#if V_HAVE_IOEXP && IOEXP_ENABLE
+  banner("IO_Expander smoke test");
+  using namespace ioexpander_factory;
+  auto* exp = create();
+  /* Pin 0 como salida y toggle */
+  exp->pinMode(0, OUTPUT);
+  exp->digitalWrite(0, HIGH);
+  delay(50);
+  exp->digitalWrite(0, LOW);
+  delay(50);
+  Serial.println(F("Expander init OK, pin0 toggled."));
+  delete exp;
 #else
-  report("ESP32_IO_Expander", "", false);
+  Serial.println(F("IOEXP_ENABLE=0 (no se inicializa el expansor; solo se probó el include)."));
 #endif
-
-#ifdef V_HAVE_BTN
-  report("ESP32_Button", V_BTN_HDR, true);
-#else
-  report("ESP32_Button", "", false);
-#endif
-
-#ifdef V_HAVE_KNOB
-  report("ESP32_Knob", V_KNOB_HDR, true);
-#else
-  report("ESP32_Knob", "", false);
-#endif
-
-#ifdef V_HAVE_UTILS
-  report("esp-lib-utils", V_UTILS_HDR, true);
-#else
-  report("esp-lib-utils", "", false);
-#endif
-
-#ifdef V_HAVE_UI
-  report("ui (SquareLine)", V_UI_HDR, true);
-#else
-  report("ui (SquareLine)", "", false);
-#endif
-
-  viewe_touch_symbols_minimal();
 
   Serial.println();
-  Serial.println(F("All modules included (where headers were found)."));
+  Serial.println(F("Done."));
 }
 
 void loop() {
