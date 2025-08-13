@@ -1,24 +1,17 @@
 #if !defined(PIO_UNIT_TESTING) && !defined(UNIT_TEST)
 
 #include <Arduino.h>
+#include "serial_prompt.h"
 
 #ifndef USB_MONITOR_BAUD
 #define USB_MONITOR_BAUD 115200
 #endif
 
 // -------- Constants --------
-constexpr char CR_CHAR = '\r';
-constexpr char LF_CHAR = '\n';
-constexpr char BS_CHAR = '\b';
-constexpr char DEL_CHAR = 127;
-constexpr char BEL_CHAR = '\a';
-constexpr char SPACE_CHAR = ' ';
-constexpr char NULL_CHAR = '\0';
-constexpr uint8_t MIN_PRINTABLE = 32;
-constexpr size_t BUFFER_SIZE = 256;
 constexpr unsigned long IDLE_DELAY = 30;
+constexpr size_t BUFFER_SIZE = 256;
 
-// -------- Banner Management (Single Responsibility) --------
+// -------- Banner Management --------
 class BannerManager {
 public:
   static void showBanner(const char* msg) {
@@ -34,79 +27,7 @@ public:
   }
 };
 
-// -------- Line Buffer Management (Single Responsibility) --------
-class LineBuffer {
-private:
-  char buffer[BUFFER_SIZE];
-  size_t length;
-  bool swallowNextLF;
-
-public:
-  LineBuffer() : length(0), swallowNextLF(false) {}
-
-  void reset() {
-    length = 0;
-  }
-
-  bool isFull() const {
-    return length >= BUFFER_SIZE - 1;
-  }
-
-  void addCharacter(char c) {
-    if (!isFull()) {
-      buffer[length++] = c;
-    }
-  }
-
-  void removeLastCharacter() {
-    if (length > 0) {
-      length--;
-    }
-  }
-
-  const char* getBuffer() {
-    buffer[length] = NULL_CHAR;
-    return buffer;
-  }
-
-  size_t getLength() const {
-    return length;
-  }
-
-  void setSwallowNextLF(bool value) {
-    swallowNextLF = value;
-  }
-
-  bool shouldSwallowLF() const {
-    return swallowNextLF;
-  }
-};
-
-// -------- Character Classification (Open/Closed Principle) --------
-class CharacterClassifier {
-public:
-  static bool isCarriageReturn(char c) {
-    return c == CR_CHAR;
-  }
-
-  static bool isLineFeed(char c) {
-    return c == LF_CHAR;
-  }
-
-  static bool isBackspace(char c) {
-    return c == BS_CHAR || c == DEL_CHAR;
-  }
-
-  static bool isPrintable(char c) {
-    return (uint8_t)c >= MIN_PRINTABLE;
-  }
-
-  static bool isControlChar(char c) {
-    return (uint8_t)c < MIN_PRINTABLE;
-  }
-};
-
-// -------- Terminal Operations (Single Responsibility) --------
+// -------- Terminal Operations --------
 class TerminalOperations {
 public:
   static void echoCharacter(char c) {
@@ -118,121 +39,24 @@ public:
   }
 
   static void ringBell() {
-    Serial.write(BEL_CHAR);
+    Serial.write('\a');
   }
 
   static void showCompleteLine(const char* line) {
-    Serial.print(F("\n[esp32s3]: User said \""));
-    Serial.print(line);
-    Serial.println(F("\"\n"));
+    Serial.print(F("\n"));
+    Serial.print(make_response(line));
+    Serial.println(F("\n"));
   }
 };
 
-// -------- Character Handlers (Strategy Pattern for different character types) --------
-class CharacterHandler {
-protected:
-  LineBuffer& lineBuffer;
-
-public:
-  CharacterHandler(LineBuffer& buffer) : lineBuffer(buffer) {}
-  virtual ~CharacterHandler() = default;
-  virtual bool handle(char c) = 0;
-};
-
-class LineEndingHandler : public CharacterHandler {
-public:
-  LineEndingHandler(LineBuffer& buffer) : CharacterHandler(buffer) {}
-
-  bool handle(char c) override {
-    if (CharacterClassifier::isCarriageReturn(c)) {
-      handleCompleteLine();
-      lineBuffer.setSwallowNextLF(true);
-      return true;
-    }
-
-    if (CharacterClassifier::isLineFeed(c)) {
-      if (lineBuffer.shouldSwallowLF()) {
-        lineBuffer.setSwallowNextLF(false);
-        return true;
-      }
-      handleCompleteLine();
-      return true;
-    }
-
-    return false;
-  }
-
-private:
-  void handleCompleteLine() {
-    TerminalOperations::showCompleteLine(lineBuffer.getBuffer());
-    BannerManager::showPrompt();
-    lineBuffer.reset();
-  }
-};
-
-class BackspaceHandler : public CharacterHandler {
-public:
-  BackspaceHandler(LineBuffer& buffer) : CharacterHandler(buffer) {}
-
-  bool handle(char c) override {
-    if (CharacterClassifier::isBackspace(c)) {
-      if (lineBuffer.getLength() > 0) {
-        lineBuffer.removeLastCharacter();
-        TerminalOperations::performBackspace();
-      }
-      return true;
-    }
-    return false;
-  }
-};
-
-class PrintableCharHandler : public CharacterHandler {
-public:
-  PrintableCharHandler(LineBuffer& buffer) : CharacterHandler(buffer) {}
-
-  bool handle(char c) override {
-    if (CharacterClassifier::isPrintable(c)) {
-      if (!lineBuffer.isFull()) {
-        lineBuffer.addCharacter(c);
-        TerminalOperations::echoCharacter(c);
-      } else {
-        TerminalOperations::ringBell();
-      }
-      return true;
-    }
-    return false;
-  }
-};
-
-class ControlCharHandler : public CharacterHandler {
-public:
-  ControlCharHandler(LineBuffer& buffer) : CharacterHandler(buffer) {}
-
-  bool handle(char c) override {
-    if (CharacterClassifier::isControlChar(c)) {
-      // Ignore other control characters
-      return true;
-    }
-    return false;
-  }
-};
-
-// -------- Main Input Processor (Dependency Inversion) --------
+// -------- Input Processor using SerialPrompt --------
 class InputProcessor {
 private:
-  LineBuffer& lineBuffer;
-  LineEndingHandler lineEndingHandler;
-  BackspaceHandler backspaceHandler;
-  PrintableCharHandler printableHandler;
-  ControlCharHandler controlHandler;
+  char buffer[BUFFER_SIZE];
+  SerialPrompt prompt;
 
 public:
-  InputProcessor(LineBuffer& buffer)
-      : lineBuffer(buffer),
-        lineEndingHandler(buffer),
-        backspaceHandler(buffer),
-        printableHandler(buffer),
-        controlHandler(buffer) {}
+  InputProcessor() : prompt(buffer, BUFFER_SIZE) {}
 
   void processAvailableInput() {
     while (Serial.available() > 0) {
@@ -245,16 +69,38 @@ public:
 
 private:
   void processCharacter(char c) {
-    // Chain of responsibility pattern
-    if (lineEndingHandler.handle(c)) return;
-    if (backspaceHandler.handle(c)) return;
-    if (backspaceHandler.handle(c)) return;
-    if (printableHandler.handle(c)) return;
-    controlHandler.handle(c); // Always handles remaining cases
+    bool lineDone = false;
+    bool consumed = prompt.feed(c, lineDone);
+
+    if (consumed) {
+      // Handle character display/feedback
+      if (c == '\b' || (uint8_t)c == 127) {
+        // Backspace - only show feedback if character was actually removed
+        TerminalOperations::performBackspace();
+      } else if ((uint8_t)c >= 32) {
+        // Printable character - echo it
+        TerminalOperations::echoCharacter(c);
+      }
+      // Control characters and line endings are silently handled by SerialPrompt
+    } else {
+      // Buffer full - ring bell
+      TerminalOperations::ringBell();
+    }
+
+    // Only handle complete line once, after SerialPrompt has processed it
+    if (lineDone) {
+      handleCompleteLine();
+    }
+  }
+
+  void handleCompleteLine() {
+    TerminalOperations::showCompleteLine(prompt.c_str());
+    BannerManager::showPrompt();
+    prompt.reset();
   }
 };
 
-// -------- System Initialization (Single Responsibility) --------
+// -------- System Initialization --------
 class SystemInitializer {
 public:
   static void initialize() {
@@ -274,6 +120,7 @@ private:
   static void showStartupMessages() {
     BannerManager::showBanner("==== Setup start ====");
     Serial.printf("USB CDC baud: %d", static_cast<int>(USB_MONITOR_BAUD));
+    Serial.println();
     Serial.println(F("Type a line and press Enter."));
     BannerManager::showBanner("==== Setup end ====");
     BannerManager::showPrompt();
@@ -281,8 +128,7 @@ private:
 };
 
 // -------- Global Objects --------
-static LineBuffer g_lineBuffer;
-static InputProcessor g_inputProcessor(g_lineBuffer);
+static InputProcessor g_inputProcessor;
 
 // -------- Arduino Entry Points --------
 void setup() {

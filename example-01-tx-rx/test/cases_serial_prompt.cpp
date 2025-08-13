@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <unity.h>
-#include "prompt.h"
+#include "serial_prompt.h"
 
 void test_make_response_header() {
   String s = make_response("Hello");

@@ -68,4 +68,3 @@ inline String make_response(const char* msg) {
   out += F("\"");
   return out;
 }
-
