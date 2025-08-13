@@ -1,3 +1,6 @@
 [submodule "example-01-red-screen/third_party/viewesmart-knob-2p1"]
 	path = example-01-red-screen/third_party/viewesmart-knob-2p1
 	url = https://github.com/VIEWESMART/UEDX48480021-MD80ESP32_2.1inch-Knob.git
+[submodule "example-02-include-libraries/third_party/viewesmart-md80esp32-knob-2.1inch-fork"]
+	path = example-02-include-libraries/third_party/viewesmart-md80esp32-knob-2.1inch-fork
+	url = https://github.com/ljgonzalez1/UEDX48480021-MD80ESP32_2.1inch-Knob.git
