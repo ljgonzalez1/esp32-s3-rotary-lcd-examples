@@ -41,22 +41,16 @@
   #define V_PANEL_HDR "third_party/.../ESP32_Display_Panel/src/ESP_Panel_Library.h"
 #endif
 
-/* ========= ESP32_IO_Expander =========
-   - Nombre “nuevo” (>= v1.x):  esp_io_expander.hpp
-   - Nombre “antiguo” (algunas libs lo piden): ESP_IOExpander.h
-   Nota: cuando Display Panel antiguo pide "ESP_IOExpander.h" pero instalas la v1.x,
-         falla el include. Aquí soportamos ambos para evitar el choque.
-*/
+// --- ESP32_IO_Expander ---
+#undef V_HAVE_IOX
+#undef V_IOX_HDR
 #if __has_include(<esp_io_expander.hpp>)
-#include <esp_io_expander.hpp>
-  #define V_HAVE_IOEXP 1
-  #define V_IOEXP_HDR  "esp_io_expander.hpp"
-#elif __has_include(<ESP_IOExpander.h>)
-#include <ESP_IOExpander.h>
-  #define V_HAVE_IOEXP 1
-  #define V_IOEXP_HDR  "ESP_IOExpander.h"
+#define V_HAVE_IOX 1
+  #define V_IOX_HDR "esp_io_expander.hpp"
+  #include <esp_io_expander.hpp>
 #else
-#define V_HAVE_IOEXP 0
+#define V_HAVE_IOX 0
+#define V_IOX_HDR ""
 #endif
 
 /* ===== ESP32_Button ===== */
@@ -127,8 +121,9 @@ inline void viewe_touch_symbols_minimal() {
 #ifdef V_HAVE_KNOB
   (void)sizeof(ESP_Knob);
 #endif
-#ifdef V_HAVE_IOX
-  (void)sizeof(ESP_IOExpander);
+#if V_HAVE_IOX
+  using _iox_anchor_t = esp_expander::Base; // tipo real, no el alias deprecated
+  (void)sizeof(_iox_anchor_t);
 #endif
 #ifdef V_HAVE_PANEL
   // la mayoría exponen ESP_Panel; si no, no pasa nada

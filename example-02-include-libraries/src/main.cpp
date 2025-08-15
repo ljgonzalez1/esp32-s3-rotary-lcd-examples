@@ -28,19 +28,19 @@ void setup() {
 
   banner("VIEWE libs import check");
 
-#ifdef V_HAVE_LVGL
+#if V_HAVE_LVGL
   report("LVGL", V_LVGL_HDR, true);
 #else
   report("LVGL", "", false);
 #endif
 
-#ifdef V_HAVE_PANEL
+#if V_HAVE_PANEL
   report("ESP32_Display_Panel", V_PANEL_HDR, true);
 #else
   report("ESP32_Display_Panel", "", false);
 #endif
 
-#ifdef V_HAVE_IOX
+#if V_HAVE_IOX
   report("ESP32_IO_Expander", V_IOX_HDR, true);
 #else
   report("ESP32_IO_Expander", "", false);
