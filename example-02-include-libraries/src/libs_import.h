@@ -23,22 +23,30 @@
 #endif
 
 /* ===== ESP32_Display_Panel ===== */
-#if __has_include(<ESP_Panel_Library.h>)
-#include <ESP_Panel_Library.h>
+#ifndef V_HAVE_PANEL
+#define V_HAVE_PANEL 0
+#define V_PANEL_HDR ""
+#endif
+
+#if __has_include(<esp_panel_library.h>) || __has_include("esp_panel_library.h")
+#undef V_HAVE_PANEL
+  #undef V_PANEL_HDR
   #define V_HAVE_PANEL 1
-  #define V_PANEL_HDR "ESP_Panel_Library.h"
-#elif __has_include(<ESP_Panel.h>)
-#include <ESP_Panel.h>
+  #define V_PANEL_HDR "esp_panel_library.h"
+  #include <esp_panel_library.h>
+#elif __has_include(<esp_display_panel.hpp>) || __has_include("esp_display_panel.hpp")
+#undef V_HAVE_PANEL
+  #undef V_PANEL_HDR
   #define V_HAVE_PANEL 1
-  #define V_PANEL_HDR "ESP_Panel.h"
-#elif __has_include(<ESP32_Display_Panel.h>)
-#include <ESP32_Display_Panel.h>
+  #define V_PANEL_HDR "esp_display_panel.hpp"
+  #include <esp_display_panel.hpp>
+#elif __has_include("third_party/viewesmart-md80esp32-knob-2.1inch-fork/Libraries/ESP32_Display_Panel/src/esp_panel_library.h")
+/* Fallback por ruta relativa si no entra en los -I */
+  #undef V_HAVE_PANEL
+  #undef V_PANEL_HDR
   #define V_HAVE_PANEL 1
-  #define V_PANEL_HDR "ESP32_Display_Panel.h"
-#elif __has_include("third_party/viewesmart-md80esp32-knob-2.1inch-fork/Libraries/ESP32_Display_Panel/src/ESP_Panel_Library.h")
-#include "third_party/viewesmart-md80esp32-knob-2.1inch-fork/Libraries/ESP32_Display_Panel/src/ESP_Panel_Library.h"
-  #define V_HAVE_PANEL 1
-  #define V_PANEL_HDR "third_party/.../ESP32_Display_Panel/src/ESP_Panel_Library.h"
+  #define V_PANEL_HDR "third_party/.../ESP32_Display_Panel/src/esp_panel_library.h"
+  #include "third_party/viewesmart-md80esp32-knob-2.1inch-fork/Libraries/ESP32_Display_Panel/src/esp_panel_library.h"
 #endif
 
 // --- ESP32_IO_Expander ---
@@ -80,24 +88,28 @@
 #endif
 
 /* ===== esp-lib-utils ===== */
-#if __has_include(<esp_utils.h>)
-#include <esp_utils.h>
-  #define V_HAVE_UTILS 1
-  #define V_UTILS_HDR "esp_utils.h"
-#elif __has_include(<esp_utils_conf.h>)
-#include <esp_utils_conf.h>
-  #define V_HAVE_UTILS 1
-  #define V_UTILS_HDR "esp_utils_conf.h"
-#elif __has_include("third_party/viewesmart-md80esp32-knob-2.1inch-fork/Libraries/esp-lib-utils/src/esp_utils.h")
-#include "third_party/viewesmart-md80esp32-knob-2.1inch-fork/Libraries/esp-lib-utils/src/esp_utils.h"
-  #define V_HAVE_UTILS 1
-  #define V_UTILS_HDR "third_party/.../esp-lib-utils/src/esp_utils.h"
-#elif __has_include("third_party/viewesmart-md80esp32-knob-2.1inch-fork/Libraries/esp-lib-utils/esp_utils_conf.h")
-// a veces este está en la raíz
-  #include "third_party/viewesmart-md80esp32-knob-2.1inch-fork/Libraries/esp-lib-utils/esp_utils_conf.h"
-  #define V_HAVE_UTILS 1
-  #define V_UTILS_HDR "third_party/.../esp-lib-utils/esp_utils_conf.h"
+#ifndef V_HAVE_UTILS
+#define V_HAVE_UTILS 0
 #endif
+#ifndef V_UTILS_HDR
+#define V_UTILS_HDR ""
+#endif
+
+#if __has_include(<esp_lib_utils.h>)
+#undef V_HAVE_UTILS
+  #undef V_UTILS_HDR
+  #define V_HAVE_UTILS 1
+  #define V_UTILS_HDR "esp_lib_utils.h"
+  #include <esp_lib_utils.h>
+#elif __has_include("third_party/viewesmart-md80esp32-knob-2.1inch-fork/Libraries/esp-lib-utils/src/esp_lib_utils.h")
+#undef V_HAVE_UTILS
+  #undef V_UTILS_HDR
+  #define V_HAVE_UTILS 1
+  #define V_UTILS_HDR "third_party/.../esp-lib-utils/src/esp_lib_utils.h"
+  #include "third_party/viewesmart-md80esp32-knob-2.1inch-fork/Libraries/esp-lib-utils/src/esp_lib_utils.h"
+#endif
+
+
 
 /* ===== ui (SquareLine) ===== */
 #if __has_include(<ui.h>)

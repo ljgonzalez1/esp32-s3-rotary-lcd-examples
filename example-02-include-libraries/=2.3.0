@@ -1,0 +1,5 @@
+Collecting intelhex
+  Using cached intelhex-2.3.0-py2.py3-none-any.whl.metadata (2.7 kB)
+Using cached intelhex-2.3.0-py2.py3-none-any.whl (50 kB)
+Installing collected packages: intelhex
+Successfully installed intelhex-2.3.0
