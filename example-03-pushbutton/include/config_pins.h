@@ -1,4 +1,4 @@
 #pragma once
+#include "hal/gpio_types.h"
 
-constexpr int PIN_SW = 0;
-
+static constexpr gpio_num_t PIN_SW = GPIO_NUM_0;
