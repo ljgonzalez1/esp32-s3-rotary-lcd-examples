@@ -46,27 +46,27 @@
 
 # Name,            Type,            SubType,   Offset,   Size,     Flags
 
-# Bootloader,      bootloader,      primary,   0x000000, 0x001000,        , #      4kiB    4kiB
-# BootloaderData,  undefined,                , 0x001000, 0x007000,        , #     32kiB   28kiB ; bootloader data & others.
-# partitionTable,  partition_table, primary,   0x008000, 0x001000,        , #     36kiB    4kiB
+# Bootloader,      bootloader,      primary,   0x000000, 0x001000,        , #      4kiB              4kiB             ; unmodifiable
+# BootloaderData,  undefined,                , 0x001000, 0x007000,        , #     32kiB             28kiB             ; unmodifiable - bootloader data & others.
+# partitionTable,  partition_table, primary,   0x008000, 0x001000,        , #     36kiB              4kiB             ; unmodifiable
 
 #                                        ------ Fixed offset 36k ------
 
-nvs,               data,             nvs,      0x009000, 0x005000,        , #     56kiB   20kiB
-otaData,           data,             ota,      0x00E000, 0x002000,        , #     64kiB    8KiB
-#phy_init,         data,             phy,      N/A,      N/A,             , #     64kiB
+nvs,               data,             nvs,      0x009000, 0x005000,        , #     56kiB             20kiB
+otaData,           data,             ota,      0x00E000, 0x002000,        , #     64kiB              8KiB
+#phy_init,         data,             phy,      N/A,      N/A,             , #     64kiB                               ; unused
 
 #                                        ------ Fixed offset 64k ------
 
-factory,           app,              factory,  0x010000, 0x200000,         , #  2112kiB    2MiB
-upd1,              app,              ota_0,    0x210000, 0x200000,         , #  4160kiB    2MiB
-upd2,              app,              ota_1,    0x410000, 0x200000,         , #  6208kiB    2kiB
-tests,             app,              test,     0x610000, 0x200000,         , #  8256kiB    2MiB
+factory,           app,              factory,  0x010000, 0x200000,         , #  2112kiB (2.06MiB)   2MiB
+upd1,              app,              ota_0,    0x210000, 0x200000,         , #  4160kiB (4.06MiB)   2MiB
+upd2,              app,              ota_1,    0x410000, 0x200000,         , #  6208kiB (6.06MiB)   2kiB
+tests,             app,              test,     0x610000, 0x200000,         , #  8256kiB (8.06MiB)   2MiB
 
-parTableOta,       0x03,             0x01,     0x810000, 0x001000,         , #  8260kiB    4kiB
-recoveryBloader,   0x02,             0x02,     0x811000, 0x001000,         , #  8264kiB    4kiB
+parTableOta,       0x03,             0x01,     0x810000, 0x001000,         , #  8260kiB (8.07MiB)   4kiB
+recoveryBloader,   0x02,             0x02,     0x811000, 0x001000,         , #  8264kiB (8.07MiB)   4kiB
 
-tmp,               data,             0x83,     0x812000, 0x080000,         , #  8776kiB    512kiB ; littlefs
-storage,           data,             0x83,     0x892000, 0x76E000,         , # 16384kiB   7608kiB (7.43MiB) ; littlefs
+tmp,               data,             0x83,     0x812000, 0x080000,         , #  8776kiB (8.57MiB)   512kiB            ; littlefs
+storage,           data,             0x83,     0x892000, 0x76E000,         , # 16384kiB (16MiB)     7608kiB (7.43MiB) ; littlefs
 
 #                                        ---------- END 16M ----------
