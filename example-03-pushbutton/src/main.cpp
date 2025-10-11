@@ -1,11 +1,10 @@
-// src/main.cpp  (ESP-IDF puro en C++)
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#include "check_libs/marks.cpp"
+#include "check_libs/check_libs.hpp"
 
-extern "C" void app_main(void) {
-  vuewe_show_imported_libs();
+extern "C" [[noreturn]] void app_main(void) {
+  viewe_show_imported_libs();
 
   while (true) {
     vTaskDelay(pdMS_TO_TICKS(500));
