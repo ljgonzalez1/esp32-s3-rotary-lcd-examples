@@ -1,49 +1,381 @@
-# Prerequisites
-*.d
+#### Extended Gitignore
+# Pseudogeneric catch-all gitignore so I don't upload more unwanted stuff ...again
 
-# Compiled Object files
+# Operating Systems
+
+## Windows
+
+### Metadata and Cache
+
+Desktop.ini
+desktop.ini
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+System Volume Information/
+
+### Temporary Files
+
+*.wbk
+$*
+~$*
+
+### Shortcuts, Packages, and Installers
+
+*.lnk
+*.cab
+*.msi
+*.msix
+*.msixbundle
+*.appx
+*.appxbundle
+
+## macOS
+
+### Finder and Volume Metadata
+
+.DS_Store
+.DS_Store?
+Icon?
+.LSOverride
+.VolumeIcon.icns
+
+### AppleDouble and Metadata Stores
+
+._*
+.AppleDouble
+.AppleDB
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.Spotlight-V100
+.metadata_never_index
+.com.apple.timemachine.donotpresent
+
+### Trash, Backups, and Remote Volumes
+
+.Trashes/
+.apdisk
+Network Trash Folder
+Temporary Items
+.Backups.backupdb/
+__MACOSX/
+
+### Packages and Distribution
+
+*.pkg
+*.mpkg
+*.dmg
+*.ipa
+*.xcarchive
+*.mobileprovision
+*.provisionprofile
+
+## Linux
+
+### Desktop Metadata
+
+.directory
+.hidden
+.xdg-volume-info
+
+### Trash and Mount Artifacts
+
+.Trash/
+.Trash-*/
+*.trashinfo
+lost+found/
+.fuse_hidden*
+.nfs*
+.gvfs/
+.gio/
+
+### Local Caches
+
+.cache/
+.thumbnails/
+
+### Desktop Packaging Artifacts
+
+.snapcraft/
+squashfs-root/
+flatpak-build/
+
+# Runtime, Logs, and Diagnostics
+
+## Logs
+
+*.log
+
+## Lock and PID Files
+
+*.lock
+*.pid
+*.~lock*
+.~lock.*
+
+## Crash Reports and Dumps
+
+*.dmp
+*.mdmp
+*.stackdump
+*.crash
+*.ips
+*.diag
+*.core
+core
+core.*
+vgcore.*
+
+## Temporary, Backup, and Patch Files
+
+*.bak
+*.old
+*.old.*
+*_old
+*.tmp
+*.tmp.*
+*.temp
+*~
+*.orig
+*.rej
+*.sav
+*.bk
+
+# Environment and Secrets
+
+## Dotenv
+
+.env
+*.env
+!template.env
+!placeholder.env
+!example.env
+
+## Certificates and Keys
+
+*.pfx
+*.p12
+*.cer
+*.crt
+*.pvk
+*.certSigningRequest
+*.pem
+!placeholder.pem
+
+# Build and Binary Artifacts
+
+## Prerequisites and Intermediate Files
+
+*.d
 *.slo
 *.lo
 *.o
 *.obj
+*.ko
+*.elf
+*.dwo
+*.su
+*.idb
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
 
-# Precompiled Headers
+## Precompiled Headers
+
 *.gch
 *.pch
 
-# Linker files
+## Linker Output
+
 *.ilk
+*.map
+*.exp
 
-# Debugger Files
-*.pdb
+## Libraries
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
 *.lai
 *.la
 *.a
 *.lib
 
-# Executables
+## Shared Libraries
+
+*.so
+*.so.*
+*.dylib
+*.dll
+
+## Modules
+
+*.mod*
+*.smod
+
+## Executables and Firmware
+
 *.exe
 *.out
 *.app
+*.i*86
+*.x86_64
+*.hex
 
-# debug information files
-*.dwo
+## Debug Symbols and Databases
 
-*.env
-.env
+*.pdb
+*.dSYM/
 
-.idea
-**/.idea
-**/.pio
-!**/.gitignore
+## Build Directories and Architecture Outputs
+
+obj/
+out/
+x64/
+x86/
+x86_64/
+arm/
+arm64/
+armhf/
+universal/
+universal2/
+*-x86_64
+*-arm64
+*-universal
+*-universal2
+![Rr]elease/
+![Rr]eleases/
+
+# Editors and IDEs
+
+## Visual Studio Code and VSCodium
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.code/
+.history/
+*.vsix
+
+## Visual Studio
+
+.vs/
+ipch/
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+*.vsp
+*.vspx
+*.sap
+*.[Cc]ache
+!*.[Cc]ache/
+*.plg
+*.opt
+*.vbw
+_Pvt_Extensions
+
+## JetBrains
+
+.idea/
+*.sln.iml
+*.iml
+*.ipr
+cmake-build-*/
+*.iws
+.idea_modules/
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+## ReSharper
+
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+## Xcode
+
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+
+## Vim and Neovim
+
+*.swp
+*.swo
+.*.swp
+.*.swo
+
+## Nano
+
+*.save
+
+## Kate
+
+.*.kate-swp
+.swp.*
+
+# Project Artifacts
+
+## Temporary Directories
+
+**/[Tt]mp/
+**/[Tt]emp/*
+
+## Archives
+
+*.zip
+*.tar.gz
+*.rar
+*.paq
+*.7z
+
+## Documents
+
+*.pdf
+
+## Images and 3D Assets
+
+*.jpg
+*.jpeg
+*.bmp
+*.xbm
+*.img
+*.tiff
+*.tif
+*.svg
+*.svgz
+*.gif
+*.raw
+*.png
+*.apng
+*.mng
+*.ico
+*.3dm
+*.max
+*.webp
+
+## Tests and Reports
+
+[Tt]ests/
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+./**/.idea
+
+!.gitignore
+!./**/.gitignore
+!.keep
+!.gitkeep
+!**/.keep
+!**/.gitkeep
+
+.pio
+./**/.pio
+
+
