@@ -43,6 +43,7 @@
 *.env
 .env
 
+.idea
 **/.idea
 **/.pio
 !**/.gitignore
