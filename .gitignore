@@ -379,5 +379,5 @@ xcuserdata/
 pvenv
 ./**/pvenv
 ./**/.pio
-
+sdkconfig.*
 
