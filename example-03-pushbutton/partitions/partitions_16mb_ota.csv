@@ -47,9 +47,9 @@
 
 # Name,            Type,            SubType,   Offset,   Size,     Flags
 
-# Bootloader,      bootloader,      primary,   0x000000, 0x001000,        , #      4kiB              4kiB             ; unmodifiable
-# BootloaderData,  undefined,                , 0x001000, 0x007000,        , #     32kiB             28kiB             ; unmodifiable - bootloader data & others.
-# partitionTable,  partition_table, primary,   0x008000, 0x001000,        , #     36kiB              4kiB             ; unmodifiable
+##Bootloader,      bootloader,      primary,   0x000000, 0x001000,        , #      4kiB              4kiB             ; unmodifiable
+##BootloaderData,  undefined,                , 0x001000, 0x007000,        , #     32kiB             28kiB             ; unmodifiable - bootloader data & others.
+##partitionTable,  partition_table, primary,   0x008000, 0x001000,        , #     36kiB              4kiB             ; unmodifiable
 
 #                                  ------ Fixed offset 36k ------
 
